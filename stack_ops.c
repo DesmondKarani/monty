@@ -45,12 +45,71 @@ void push(stack_t **stack, unsigned int line_number, const char *arg)
  */
 void pall(stack_t **stack, unsigned int line_number)
 {
-	(void)line_number;
 	stack_t *current = *stack;
+
+	(void)line_number;
 
 	while (current != NULL)
 	{
 		printf("%d\n", current->n);
 		current = current->next;
+	}
+}
+
+#include "monty.h"
+
+/* ... [Your existing function implementations] ... */
+
+/**
+ * execute_command - Parses the line and executes the corresponding command.
+ * @stack: Double pointer to the top of the stack.
+ * @line: Line from the file.
+ * @line_number: Line number in the file.
+ */
+void execute_command(stack_t **stack, char *line, unsigned int line_number)
+{
+	char *opcode;
+	char *arg;
+
+	opcode = strtok(line, " \n\t\r");
+
+	if (opcode == NULL || opcode[0] == '#')
+		/* Handle comments or blank lines */
+		return;
+
+	if (strcmp(opcode, "push") == 0)
+	{
+		arg = strtok(NULL, " \n\t\r");
+		push(stack, line_number, arg);
+	}
+
+	else if (strcmp(opcode, "pall") == 0)
+	{
+		pall(stack, line_number);
+	}
+
+	/* Add more opcodes here as needed */
+
+	else
+	{
+		fprintf(stderr, "L%d: unknown instruction %s\n",
+				line_number, opcode);
+		exit(EXIT_FAILURE);
+	}
+}
+
+/**
+ * free_stack - Frees a stack.
+ * @stack: A pointer to the top of the stack.
+ */
+void free_stack(stack_t *stack)
+{
+	stack_t *temp;
+
+	while (stack != NULL)
+	{
+		temp = stack->next;
+		free(stack);
+		stack = temp;
 	}
 }
