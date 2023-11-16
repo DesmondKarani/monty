@@ -58,8 +58,6 @@ void pall(stack_t **stack, unsigned int line_number)
 
 #include "monty.h"
 
-/* ... [Your existing function implementations] ... */
-
 /**
  * execute_command - Parses the line and executes the corresponding command.
  * @stack: Double pointer to the top of the stack.
@@ -76,20 +74,36 @@ void execute_command(stack_t **stack, char *line, unsigned int line_number)
 	if (opcode == NULL || opcode[0] == '#')
 		/* Handle comments or blank lines */
 		return;
-
 	if (strcmp(opcode, "push") == 0)
 	{
 		arg = strtok(NULL, " \n\t\r");
 		push(stack, line_number, arg);
 	}
-
 	else if (strcmp(opcode, "pall") == 0)
 	{
 		pall(stack, line_number);
 	}
-
-	/* Add more opcodes here as needed */
-
+	else if (strcmp(opcode, "pint") == 0)
+	{
+		pint(stack, line_number);
+	}
+	else if (strcmp(opcode, "pop") == 0)
+	{
+		pop(stack, line_number);
+	}
+	else if (strcmp(opcode, "swap") == 0)
+	{
+		swap(stack, line_number);
+	}
+	else if (strcmp(opcode, "add") == 0)
+	{
+		add(stack, line_number);
+	}
+	else if (strcmp(opcode, "nop") == 0)
+	{
+		nop(stack, line_number);
+	}
+	/* Provision for more opcodes here as needed */
 	else
 	{
 		fprintf(stderr, "L%d: unknown instruction %s\n",
@@ -112,4 +126,19 @@ void free_stack(stack_t *stack)
 		free(stack);
 		stack = temp;
 	}
+}
+/**
+ * pint - Prints the value at the top of the stack.
+ * @stack: A pointer to the top of the stack.
+ * @line_number: The line number in the script file.
+ */
+void pint(stack_t **stack, unsigned int line_number)
+{
+	if (stack == NULL || *stack == NULL)
+	{
+		fprintf(stderr, "L%d: can't pint, stack empty\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+
+	printf("%d\n", (*stack)->n);
 }
